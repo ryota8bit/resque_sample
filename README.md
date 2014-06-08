@@ -142,6 +142,7 @@ $ 2) "resque:resque_sample:development:stat:processed"
 $ 3) "resque:resque_sample:development:queue:resque_sample_koganezawa"
 $ 4) "resque:resque_sample:development:queues"
 $ 127.0.0.1:6379>type 'resque:resque_sample:development:queue:resque_sample'
+$ list
 $ 127.0.0.1:6379> LRANGE 'resque:resque_sample:development:queue:resque_sample' 0 -1
 $ 1) "{\"class\":\"HelloQueue\",\"args\":[\"world\"]}" 
 $ 2) "{\"class\":\"KoganezawaQueue\",\"args\":[\"world\"]}"
@@ -153,14 +154,21 @@ $ 1) "{\"class\":\"HelloQueue\",\"args\":[\"world\"]}"
 $ 2) "{\"class\":\"KoganezawaQueue\",\"args\":[\"world\"]}"
 クラス名とパラメータが設定されているのがわかる。
 ワーカーはこの値を取得して、各クラスに定義されたキューの名称とワーカー実行時に
-キューの名称が一致するクラスのみ実行するっぽい。
+パラメーターとして渡されたキューの名称が一致するクラスのみ実行するっぽい。
 ```
 
-### redisの中身を確認してみた結果各モジュールが何をしてるか予想してみた ###
+### redisの中身を確認してみた結果、各モジュールが何をしてるか予想してみた ###
 
 * HomeControllerについて
 ```
-このコントローラーでリクエストを受け取ると、 redisへQUEUEのクラス名とQUEUEへ引き渡すパラメータを保存する。（enqueueする）
+このコントローラーでリクエストを受け取ると、 redisへQUEUEのクラス名と
+QUEUEへ引き渡すパラメータを保存する。（enqueueする）
+```
+
+* Workerの実行について
+```
+ $ QUEUE=resque_sample rake environment resque:work
+キューを指定しワーカーを実行する。
 ```
 
 * hello_queue.rbについて
@@ -169,6 +177,7 @@ $ 2) "{\"class\":\"KoganezawaQueue\",\"args\":[\"world\"]}"
 ワーカー実行時はQUEUE名を指定する。QUEUEクラス名ではない。
 ややこしいのは、このQUEUEクラス名とQUEUE名は別もの。
 redisにはQUEUEクラス名が保存されている。
+
 workerはredisに保存されたQUEUEクラス名を取得し、worker実行時に渡された引数（QUEUE）と
 QUEUEクラス内に記載されたQUEUEが一致してるものを実行するっぽい。
 ここらへんどういうふうに裏で動いてるのか実行結果とRedisの中身から予測してみた。
@@ -178,6 +187,7 @@ QUEUEクラス内に記載されたQUEUEが一致してるものを実行する�
 参考記事1：http://blog.hello-world.jp.net/?p=895 ※今回はこっちに記載されているアプリを模写した
 参考記事2：http://blog.livedoor.jp/sasata299/archives/51889303.html
 参考記事3：http://railscasts.com/episodes/271-resque?language=ja&view=asciicast ※これわかりやすい
+参考記事4：http://kitak.hatenablog.jp/entry/2013/08/11/232218
 Redisのドキュメント：http://redis.shibu.jp/index.html
 Redisコマンドラインから操作基本：http://gihyo.jp/dev/feature/01/redis/0002
 ```
