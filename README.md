@@ -114,7 +114,7 @@ $ QUEUE=* rake environment resque:work
 $ bundle exec resque-web
 ```
 
-* 下記のように編集すれば、これで"http://localhost:3000/resque/overview"アクセスできる。
+* 下記のようにGemfileとrouteのサーバーをマウントすれば、これで"http://localhost:3000/resque/overview"アクセスできる。
 ```
 $ vi Gemfile
 $ +gem 'resque', :require => 'resque/server'
@@ -131,9 +131,12 @@ $ QUEUE=resque_sample rake environment resque:work
 ```
 
 * HomeControllerについて
+```
 このコントローラーでリクエストを受け取ると、 redisへQUEUEのクラス名とQUEUEへ引き渡すパラメータを保存する。（enqueueする）
+```
 
 * hello_queue.rbについて
+```
 これは実際のQUEUEの処理が書かれている。
 ワーカー実行時はQUEUE名を指定する。QUEUEクラス名ではない。
 ややこしいのは、このQUEUEクラス名とQUEUE名は別もの。
@@ -141,10 +144,12 @@ redisにはQUEUEクラス名が保存されている。
 workerはredisに保存されたQUEUEクラス名を取得し、
 worker実行時に渡された引数（QUEUE）とQUEUEクラス内に記載されたQUEUEが一致してるものを実行するっぽい。
 ここらへんどういうふうに裏で動いてるのか実行結果から予測してみた。
+```
 
-
+```
 参考記事1：http://blog.hello-world.jp.net/?p=895 ※今回はこっちに記載されているアプリを模写した
 参考記事2：http://blog.livedoor.jp/sasata299/archives/51889303.html
 参考記事3：http://railscasts.com/episodes/271-resque?language=ja&view=asciicast ※これわかりやすい
 Redisのドキュメント：http://redis.shibu.jp/index.html
 Redisコマンドラインから操作基本：http://gihyo.jp/dev/feature/01/redis/0002
+```
