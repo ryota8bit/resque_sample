@@ -189,4 +189,7 @@ QUEUEクラス内に記載されたQUEUEが一致してるものを実行する�
 参考記事4：http://kitak.hatenablog.jp/entry/2013/08/11/232218
 Redisのドキュメント：http://redis.shibu.jp/index.html
 Redisコマンドラインから操作基本：http://gihyo.jp/dev/feature/01/redis/0002
+
+ ※iQONのバックエンドの非同期処理について(具体的な実装編)は下記参照
+ http://tech.vasily.jp/2013/02/iqon_backend_resque/
 ```
