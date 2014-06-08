@@ -128,7 +128,35 @@ $ +mount Resque::Server, :at => "/resque"
 $ redis-server /usr/local/etc/redis.conf
 $ bundle exec rails s
 $ QUEUE=resque_sample rake environment resque:work
+$ http://localhost:3000/hello/world
+$ http://localhost:3000/resque/overview
 ```
+
+### コマンドラインよりredisの中身を確認してみた ###
+* 確認手順と実行結果
+```
+$ redis-cli
+$ 127.0.0.1:6379> keys 'resque:*'
+$ 1) "resque:resque_sample:development:queue:resque_sample"
+$ 2) "resque:resque_sample:development:stat:processed"
+$ 3) "resque:resque_sample:development:queue:resque_sample_koganezawa"
+$ 4) "resque:resque_sample:development:queues"
+$ 127.0.0.1:6379>type 'resque:resque_sample:development:queue:resque_sample'
+$ 127.0.0.1:6379> LRANGE 'resque:resque_sample:development:queue:resque_sample' 0 -1
+$ 1) "{\"class\":\"HelloQueue\",\"args\":[\"world\"]}" 
+$ 2) "{\"class\":\"KoganezawaQueue\",\"args\":[\"world\"]}"
+```
+
+* これが中身
+```
+$ 1) "{\"class\":\"HelloQueue\",\"args\":[\"world\"]}" 
+$ 2) "{\"class\":\"KoganezawaQueue\",\"args\":[\"world\"]}"
+クラス名とパラメータが設定されているのがわかる。
+ワーカーはこの値を取得して、各クラスに定義されたキューの名称とワーカー実行時に
+キューの名称が一致するクラスのみ実行するっぽい。
+```
+
+### redisの中身を確認してみた結果各モジュールが何をしてるか予想してみた ###
 
 * HomeControllerについて
 ```
@@ -141,9 +169,9 @@ $ QUEUE=resque_sample rake environment resque:work
 ワーカー実行時はQUEUE名を指定する。QUEUEクラス名ではない。
 ややこしいのは、このQUEUEクラス名とQUEUE名は別もの。
 redisにはQUEUEクラス名が保存されている。
-workerはredisに保存されたQUEUEクラス名を取得し、
-worker実行時に渡された引数（QUEUE）とQUEUEクラス内に記載されたQUEUEが一致してるものを実行するっぽい。
-ここらへんどういうふうに裏で動いてるのか実行結果から予測してみた。
+workerはredisに保存されたQUEUEクラス名を取得し、worker実行時に渡された引数（QUEUE）と
+QUEUEクラス内に記載されたQUEUEが一致してるものを実行するっぽい。
+ここらへんどういうふうに裏で動いてるのか実行結果とRedisの中身から予測してみた。
 ```
 
 ```
