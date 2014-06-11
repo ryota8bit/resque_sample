@@ -84,7 +84,7 @@ $ vi route.rb
 $ +get "hello/:message" => 'home#hello'
 ```
 
-* タスクの追加
+* タスクの追加(lib/tasks/resque.rakeを作成する)
 ```
 $ +require 'resque/tasks'
 $ +task "resque:setup" => :environment
