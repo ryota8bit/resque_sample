@@ -122,7 +122,7 @@ $ vi route.rb
 $ +mount Resque::Server, :at => "/resque"
 ```
 
-## 各起動コメンド ##
+## 各起動コマンド ##
 ```
 $ redis-server /usr/local/etc/redis.conf
 $ bundle exec rails s
