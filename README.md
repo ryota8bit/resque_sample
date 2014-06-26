@@ -84,7 +84,7 @@ $ vi route.rb
 $ +get "hello/:message" => 'home#hello'
 ```
 
-* タスクの追加
+* タスクの追加(lib/tasks/resque.rakeを作成する)
 ```
 $ +require 'resque/tasks'
 $ +task "resque:setup" => :environment
@@ -122,7 +122,7 @@ $ vi route.rb
 $ +mount Resque::Server, :at => "/resque"
 ```
 
-## 各起動コメンド ##
+## 各起動コマンド ##
 ```
 $ redis-server /usr/local/etc/redis.conf
 $ bundle exec rails s
